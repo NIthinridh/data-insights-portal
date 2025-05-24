@@ -6,7 +6,7 @@ import lombok.Data;
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private Long id;
+    private Long id;  // Changed to Long to match User model
     private String username;
     private String email;
     private String role;
