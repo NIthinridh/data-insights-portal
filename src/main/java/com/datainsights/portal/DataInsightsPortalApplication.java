@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableConfigurationProperties
-@EnableJpaRepositories(basePackages = "com.datainsights.portal.repository.sql")
+@EnableJpaRepositories(basePackages = {"com.datainsights.portal.repository", "com.datainsights.portal.repository.sql"})
 @EnableMongoRepositories(basePackages = "com.datainsights.portal.repository.mongodb")
 @EnableAsync
 @EnableScheduling
