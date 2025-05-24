@@ -39,22 +39,28 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        logger.info("Configuring security filter chain");
+        logger.info("Configuring security filter chain with React frontend support");
 
         http
                 // Enable CORS and disable CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
 
-                // Configure authorization rules - TEMPORARILY ALLOW ALL FOR TESTING
+                // Configure authorization rules
                 .authorizeHttpRequests(auth -> {
                     // Public endpoints - Health and diagnostics
                     auth.requestMatchers("/api/health/**", "/api/ping").permitAll()
                             .requestMatchers("/actuator/health").permitAll()
-                            .requestMatchers("/robots.txt", "/favicon.ico").permitAll()
 
-                            // Root endpoint
+                            // Static resources for React frontend
                             .requestMatchers("/", "/index.html").permitAll()
+                            .requestMatchers("/static/**", "/css/**", "/js/**", "/images/**", "/fonts/**").permitAll()
+                            .requestMatchers("/favicon.ico", "/logo*.png", "/manifest.json", "/robots.txt").permitAll()
+                            .requestMatchers("/*.js", "/*.css", "/*.map").permitAll()
+
+                            // React Router - Allow all frontend routes
+                            .requestMatchers("/dashboard/**", "/login", "/register", "/profile/**", "/analytics/**").permitAll()
+                            .requestMatchers("/budget/**", "/goals/**", "/reports/**", "/transactions/**").permitAll()
 
                             // Auth endpoints
                             .requestMatchers("/api/auth/**").permitAll()
@@ -63,17 +69,13 @@ public class SecurityConfig {
                             // TEMPORARY: Allow all API endpoints for testing
                             .requestMatchers("/api/**").permitAll()
 
-                            // Transaction endpoints for debugging
-                            .requestMatchers("/api/financial/tx/**").permitAll()
-                            .requestMatchers("/api/financial/**").permitAll()
-
                             // Allow all OPTIONS requests for CORS preflight
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                            // TEMPORARY: Allow all requests for initial testing
-                            .anyRequest().permitAll(); // Changed from authenticated() to permitAll()
+                            // Allow all requests for initial testing
+                            .anyRequest().permitAll();
 
-                    logger.info("Security authorization rules configured successfully - PUBLIC ACCESS MODE");
+                    logger.info("Security authorization rules configured - FRONTEND + API MODE");
                 })
 
                 // Use stateless session management (no session cookies)
@@ -87,7 +89,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
 
-        logger.info("Security filter chain configured successfully");
+        logger.info("Security filter chain configured successfully with React support");
         return http.build();
     }
 
@@ -95,7 +97,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // UPDATED: Allow Railway domain and localhost
+        // Allow Railway domain and localhost for development
         configuration.setAllowedOriginPatterns(Arrays.asList(
                 "*",  // Allow all for testing
                 "https://data-insights-portal-production.up.railway.app",
@@ -111,7 +113,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        logger.info("CORS configuration set up successfully - INCLUDES RAILWAY DOMAIN");
+        logger.info("CORS configuration set up for React frontend");
         return source;
     }
 
