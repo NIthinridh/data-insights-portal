@@ -5,8 +5,8 @@
   },
   "deploy": {
     "startCommand": "java -Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxGCPauseMillis=200 -Dspring.profiles.active=railway -Dserver.port=$PORT -jar target/data-insights-portal-0.0.1-SNAPSHOT.jar",
-    "healthcheckPath": "/actuator/health",
-    "healthcheckTimeout": 180,
+    "healthcheckPath": "/api/health",
+    "healthcheckTimeout": 300,
     "restartPolicyType": "on_failure",
     "numReplicas": 1
   }
