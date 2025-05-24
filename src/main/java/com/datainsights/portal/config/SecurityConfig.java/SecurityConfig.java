@@ -46,22 +46,34 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
 
-                // Configure authorization rules
+                // Configure authorization rules - TEMPORARILY ALLOW ALL FOR TESTING
                 .authorizeHttpRequests(auth -> {
-                    // Public endpoints
-                    auth.requestMatchers("/api/auth/**").permitAll()
+                    // Public endpoints - Health and diagnostics
+                    auth.requestMatchers("/api/health/**", "/api/ping").permitAll()
+                            .requestMatchers("/actuator/health").permitAll()
+                            .requestMatchers("/robots.txt", "/favicon.ico").permitAll()
+
+                            // Root endpoint
+                            .requestMatchers("/", "/index.html").permitAll()
+
+                            // Auth endpoints
+                            .requestMatchers("/api/auth/**").permitAll()
                             .requestMatchers("/api/diagnostic/**").permitAll()
-                            .requestMatchers("/api/health/**").permitAll()
+
+                            // TEMPORARY: Allow all API endpoints for testing
+                            .requestMatchers("/api/**").permitAll()
+
                             // Transaction endpoints for debugging
                             .requestMatchers("/api/financial/tx/**").permitAll()
-                            // All financial endpoints require authentication
-                            .requestMatchers("/api/financial/**").authenticated()
+                            .requestMatchers("/api/financial/**").permitAll()
+
                             // Allow all OPTIONS requests for CORS preflight
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                            // All other endpoints require authentication
-                            .anyRequest().authenticated();
 
-                    logger.info("Security authorization rules configured successfully");
+                            // TEMPORARY: Allow all requests for initial testing
+                            .anyRequest().permitAll(); // Changed from authenticated() to permitAll()
+
+                    logger.info("Security authorization rules configured successfully - PUBLIC ACCESS MODE");
                 })
 
                 // Use stateless session management (no session cookies)
@@ -82,7 +94,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+
+        // UPDATED: Allow Railway domain and localhost
+        configuration.setAllowedOriginPatterns(Arrays.asList(
+                "*",  // Allow all for testing
+                "https://data-insights-portal-production.up.railway.app",
+                "http://localhost:3000",
+                "http://localhost:8080"
+        ));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"));
         configuration.setExposedHeaders(Collections.singletonList("Authorization"));
@@ -91,7 +111,7 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        logger.info("CORS configuration set up successfully");
+        logger.info("CORS configuration set up successfully - INCLUDES RAILWAY DOMAIN");
         return source;
     }
 
