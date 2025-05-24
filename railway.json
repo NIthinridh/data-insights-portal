@@ -4,9 +4,10 @@
     "builder": "nixpacks"
   },
   "deploy": {
-    "startCommand": "java -Xmx400m -XX:+UseG1GC -XX:+UseStringDeduplication -Dspring.profiles.active=railway -jar target/data-insights-portal-0.0.1-SNAPSHOT.jar",
+    "startCommand": "java -Xmx1g -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxGCPauseMillis=200 -Dspring.profiles.active=railway -Dserver.port=$PORT -jar target/data-insights-portal-0.0.1-SNAPSHOT.jar",
     "healthcheckPath": "/actuator/health",
-    "healthcheckTimeout": 120,
-    "restartPolicyType": "on_failure"
+    "healthcheckTimeout": 180,
+    "restartPolicyType": "on_failure",
+    "numReplicas": 1
   }
 }
