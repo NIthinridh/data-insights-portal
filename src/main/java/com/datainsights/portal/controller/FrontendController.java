@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class FrontendController {
 
-    // Serve React app for all non-API routes
+    // Serve React app for the root path and all frontend routes
     @GetMapping(value = {
             "/",
-            "/dashboard",
             "/dashboard/**",
             "/login",
             "/register",
@@ -21,7 +20,7 @@ public class FrontendController {
             "/transactions/**",
             "/settings/**"
     })
-    public String forward() {
+    public String home() {
         return "forward:/index.html";
     }
 }
