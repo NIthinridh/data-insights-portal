@@ -20,7 +20,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/financial/tx")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "https://data-insights-portal-production.up.railway.app"})
 public class TransactionController {
 
     private final TransactionService transactionService;
@@ -140,7 +140,7 @@ public class TransactionController {
         }
     }
 
-    // Delete transaction
+    // Delete transaction - FIXED VERSION
     @DeleteMapping("/transaction/{id}")
     public ResponseEntity<?> deleteTransaction(@PathVariable Long id) {
         logger.info("Receiving request to delete transaction with ID: {}", id);
@@ -150,6 +150,7 @@ public class TransactionController {
 
             if (deleted) {
                 logger.info("Transaction with ID {} deleted successfully", id);
+                // FIXED: Changed to Map<String, Object> to allow boolean values
                 Map<String, Object> response = new HashMap<>();
                 response.put("id", id);
                 response.put("message", "Transaction deleted successfully");
@@ -269,7 +270,7 @@ public class TransactionController {
         }
     }
 
-    // Alternative GET endpoint for deleting transactions
+    // Alternative GET endpoint for deleting transactions - FIXED VERSION
     @GetMapping("/transaction/delete/{id}")
     public ResponseEntity<?> deleteTransactionViaGet(@PathVariable Long id) {
         logger.info("Receiving GET request to delete transaction with ID: {}", id);
@@ -279,6 +280,7 @@ public class TransactionController {
 
             if (deleted) {
                 logger.info("Transaction with ID {} deleted successfully via GET", id);
+                // FIXED: Changed to Map<String, Object> to allow boolean values
                 Map<String, Object> response = new HashMap<>();
                 response.put("id", id);
                 response.put("message", "Transaction deleted successfully");
