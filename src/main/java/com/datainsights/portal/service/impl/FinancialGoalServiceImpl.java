@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -36,7 +38,8 @@ public class FinancialGoalServiceImpl implements FinancialGoalService {
     public FinancialGoal createGoal(FinancialGoal goal, User user) {
         goal.setCreatedBy(user);
         if (goal.getCurrentAmount() == null) {
-            goal.setCurrentAmount(0.0);
+            // Fix: Use BigDecimal.ZERO instead of 0.0
+            goal.setCurrentAmount(BigDecimal.ZERO);
         }
         return goalRepository.save(goal);
     }
@@ -66,7 +69,10 @@ public class FinancialGoalServiceImpl implements FinancialGoalService {
     @Override
     public FinancialGoal addContribution(Long id, Double amount, User user) {
         FinancialGoal goal = getGoalById(id, user);
-        goal.setCurrentAmount(goal.getCurrentAmount() + amount);
+        // Fix: Use BigDecimal.add() instead of + operator
+        BigDecimal contributionAmount = BigDecimal.valueOf(amount);
+        BigDecimal newCurrentAmount = goal.getCurrentAmount().add(contributionAmount);
+        goal.setCurrentAmount(newCurrentAmount);
         return goalRepository.save(goal);
     }
 
@@ -74,10 +80,18 @@ public class FinancialGoalServiceImpl implements FinancialGoalService {
     public Map<String, Object> getGoalProgress(Long id, User user) {
         FinancialGoal goal = getGoalById(id, user);
 
-        double targetAmount = goal.getTargetAmount();
-        double currentAmount = goal.getCurrentAmount();
-        double progressPercentage = (currentAmount / targetAmount) * 100;
-        double remainingAmount = targetAmount - currentAmount;
+        // Fix: Use BigDecimal operations and convert to double at the end
+        BigDecimal targetAmount = goal.getTargetAmount();
+        BigDecimal currentAmount = goal.getCurrentAmount();
+
+        // Fix: Use BigDecimal.divide() and multiply() instead of arithmetic operators
+        BigDecimal progressPercentageBD = currentAmount
+                .divide(targetAmount, 4, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+        double progressPercentage = progressPercentageBD.doubleValue();
+
+        BigDecimal remainingAmountBD = targetAmount.subtract(currentAmount);
+        double remainingAmount = remainingAmountBD.doubleValue();
 
         LocalDate today = LocalDate.now();
         long daysRemaining = ChronoUnit.DAYS.between(today, goal.getTargetDate());

@@ -181,8 +181,9 @@ public class FinancialHealthServiceImpl implements FinancialHealthService {
         if (!investmentGoals.isEmpty()) {
             // Calculate progress towards investment goals
             for (FinancialGoal goal : investmentGoals) {
-                double progress = goal.getCurrentAmount() / goal.getTargetAmount();
-                goalScore += Math.min(100, progress * 100);
+                // Fix: Use BigDecimal.divide() instead of / operator
+                BigDecimal progress = goal.getCurrentAmount().divide(goal.getTargetAmount(), 4, RoundingMode.HALF_UP);
+                goalScore += Math.min(100, progress.multiply(BigDecimal.valueOf(100)).doubleValue());
             }
             goalScore = goalScore / investmentGoals.size();
         }
@@ -371,8 +372,9 @@ public class FinancialHealthServiceImpl implements FinancialHealthService {
 
         BigDecimal totalEmergencyFund = BigDecimal.ZERO;
         if (!emergencyGoals.isEmpty()) {
+            // Fix: Don't use BigDecimal.valueOf() on BigDecimal - just use the BigDecimal directly
             totalEmergencyFund = emergencyGoals.stream()
-                    .map(goal -> BigDecimal.valueOf(goal.getCurrentAmount()))
+                    .map(FinancialGoal::getCurrentAmount)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
