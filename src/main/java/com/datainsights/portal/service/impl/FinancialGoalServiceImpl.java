@@ -25,12 +25,14 @@ public class FinancialGoalServiceImpl implements FinancialGoalService {
 
     @Override
     public List<FinancialGoal> getAllGoalsByUser(User user) {
-        return goalRepository.findByCreatedByOrderByPriorityDesc(user);
+        // Fix: Pass user.getId() instead of user object
+        return goalRepository.findByCreatedByOrderByPriorityDesc(user.getId());
     }
 
     @Override
     public FinancialGoal getGoalById(Long id, User user) {
-        return goalRepository.findByIdAndCreatedBy(id, user)
+        // Fix: Pass user.getId() instead of user object
+        return goalRepository.findByIdAndCreatedBy(id, user.getId())
                 .orElseThrow(() -> new RuntimeException("Goal not found or access denied"));
     }
 

@@ -166,8 +166,9 @@ public class FinancialHealthServiceImpl implements FinancialHealthService {
 
     private double calculateInvestmentScore(User user) {
         // Check financial goals for investment-related goals
+        // Fix: Pass user.getId() instead of user object
         List<FinancialGoal> investmentGoals = financialGoalRepository.findByCreatedByAndCategory(
-                user, "Investment");
+                user.getId(), "Investment");
 
         // Check investment transactions
         List<Transaction> investmentTransactions = transactionRepository.findByCreatedByAndCategory(
@@ -367,8 +368,9 @@ public class FinancialHealthServiceImpl implements FinancialHealthService {
                 user.getId(), startDate, endDate).divide(new BigDecimal("3"), RoundingMode.HALF_UP);
 
         // Check for emergency fund goals
+        // Fix: Pass user.getId() instead of user object
         List<FinancialGoal> emergencyGoals = financialGoalRepository.findByCreatedByAndCategory(
-                user, "Emergency Fund");
+                user.getId(), "Emergency Fund");
 
         BigDecimal totalEmergencyFund = BigDecimal.ZERO;
         if (!emergencyGoals.isEmpty()) {
