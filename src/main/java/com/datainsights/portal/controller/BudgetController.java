@@ -1,6 +1,7 @@
 package com.datainsights.portal.controller;
 
 import com.datainsights.portal.model.Budget;
+import com.datainsights.portal.repository.BudgetRepository;
 import com.datainsights.portal.service.BudgetService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,9 @@ public class BudgetController {
     private BudgetService budgetService;
 
     @Autowired
+    private BudgetRepository budgetRepository;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @PostConstruct
@@ -43,6 +47,30 @@ public class BudgetController {
         } catch (Exception e) {
             logger.error("Error retrieving budgets: {}", e.getMessage(), e);
             return ResponseEntity.ok(new ArrayList<>());
+        }
+    }
+
+    @GetMapping("/budgets/debug")
+    public ResponseEntity<Map<String, Object>> debugBudgets() {
+        try {
+            Map<String, Object> debug = new HashMap<>();
+
+            // Direct repository call to bypass service layer
+            List<Budget> allBudgets = budgetRepository.findAll();
+
+            debug.put("totalBudgetsInDatabase", allBudgets.size());
+            debug.put("budgets", allBudgets);
+            debug.put("serviceLayerResult", budgetService.getAllBudgets().size());
+
+            logger.info("DEBUG: Found {} budgets in database directly", allBudgets.size());
+            logger.info("DEBUG: Service layer returns {} budgets", budgetService.getAllBudgets().size());
+
+            return ResponseEntity.ok(debug);
+        } catch (Exception e) {
+            logger.error("Debug error: {}", e.getMessage(), e);
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.ok(error);
         }
     }
 
@@ -79,7 +107,9 @@ public class BudgetController {
             }
 
             budget.setNotes((String) budgetData.get("notes"));
-            return ResponseEntity.ok(budgetService.createBudget(budget));
+            Budget savedBudget = budgetService.createBudget(budget);
+            logger.info("Successfully created budget with ID: {}", savedBudget.getId());
+            return ResponseEntity.ok(savedBudget);
         } catch (Exception e) {
             logger.error("Error creating budget: {}", e.getMessage());
             return ResponseEntity.badRequest().build();
@@ -107,10 +137,13 @@ public class BudgetController {
             budgetDetails.setNotes((String) budgetData.get("notes"));
 
             Budget updatedBudget = budgetService.updateBudget(id, budgetDetails);
+            logger.info("Successfully updated budget with ID: {}", id);
             return ResponseEntity.ok(updatedBudget);
         } catch (RuntimeException e) {
+            logger.error("Budget not found or access denied for ID: {}", id);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
+            logger.error("Error updating budget with ID {}: {}", id, e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
@@ -119,9 +152,14 @@ public class BudgetController {
     public ResponseEntity<Void> deleteBudget(@PathVariable Long id) {
         try {
             budgetService.deleteBudget(id);
+            logger.info("Successfully deleted budget with ID: {}", id);
             return ResponseEntity.ok().build();
         } catch (RuntimeException e) {
+            logger.error("Budget not found or access denied for ID: {}", id);
             return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            logger.error("Error deleting budget with ID {}: {}", id, e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
     }
 
