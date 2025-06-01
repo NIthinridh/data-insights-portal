@@ -36,7 +36,8 @@ public class FinancialGoalServiceImpl implements FinancialGoalService {
 
     @Override
     public FinancialGoal createGoal(FinancialGoal goal, User user) {
-        goal.setCreatedBy(user);
+        // Fix: Set user ID (Long) instead of User object
+        goal.setCreatedBy(user.getId());
         if (goal.getCurrentAmount() == null) {
             // Fix: Use BigDecimal.ZERO instead of 0.0
             goal.setCurrentAmount(BigDecimal.ZERO);
