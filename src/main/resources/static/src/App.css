@@ -1,0 +1,456 @@
+/* Enhanced App.css with modern styling and mobile responsiveness */
+
+/* Import Inter font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling on the body */
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* App structure */
+.app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.content-container {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 64px); /* Subtract header height */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Desktop main content */
+.main-content {
+  flex: 1;
+  height: 100%;
+  width: calc(100% - 240px); /* Subtract sidebar width */
+  padding: 24px;
+  overflow-y: auto;
+  margin-left: 240px; /* Same as drawer width */
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Make all content divs stretch to fill available space */
+.main-content > div {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure all page containers fill available space */
+.page-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Dashboard cards with enhanced styling */
+.dashboard-card {
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+}
+
+.dashboard-card-header {
+  padding: 20px 24px;
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card-content {
+  padding: 24px;
+}
+
+.metric-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 8px;
+  transition: color 0.2s ease;
+}
+
+.metric-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary, #4b5563);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-trend {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.trend-up {
+  color: var(--success-main, #10b981);
+}
+
+.trend-down {
+  color: var(--error-main, #ef4444);
+}
+
+/* Login and Register Pages */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--background-gradient-start, #3b82f6), var(--background-gradient-end, #1d4ed8));
+  padding: 20px;
+}
+
+.auth-form {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+  background-color: var(--background-paper, white);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  animation: fadeIn 0.5s ease-out;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text-primary, #1f2937);
+}
+
+.auth-subtitle {
+  font-size: 16px;
+  color: var(--text-secondary, #4b5563);
+}
+
+.auth-form .MuiTextField-root {
+  margin-bottom: 20px;
+}
+
+.auth-form .MuiButton-root {
+  margin-top: 12px;
+  height: 48px;
+  font-size: 16px;
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--text-secondary, #4b5563);
+}
+
+.auth-footer a {
+  color: var(--primary-main, #3b82f6);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Table enhancements */
+.data-table-container {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.data-table-header {
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.data-table-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.data-table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Chart containers */
+.chart-container {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+  position: relative;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Utility classes */
+.positive-value {
+  color: var(--success-main, #10b981);
+}
+
+.negative-value {
+  color: var(--error-main, #ef4444);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+
+.mb-6 {
+  margin-bottom: 24px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 900px) {
+  /* Mobile main content - no margin for sidebar */
+  .main-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+    padding: 80px 16px 16px 16px; /* Add top padding for mobile menu button */
+  }
+  
+  /* Mobile auth form adjustments */
+  .auth-form {
+    padding: 24px;
+    margin: 16px;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+  }
+  
+  /* Mobile metric values */
+  .metric-value {
+    font-size: 1.875rem;
+  }
+  
+  /* Mobile dashboard cards - reduce padding */
+  .dashboard-card-content {
+    padding: 16px;
+  }
+  
+  .dashboard-card-header {
+    padding: 16px;
+  }
+  
+  /* Mobile chart containers - reduce min height */
+  .chart-container {
+    min-height: 250px;
+  }
+  
+  /* Mobile data table adjustments */
+  .data-table-header {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  
+  .data-table-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Extra small screens */
+  .main-content {
+    padding: 80px 8px 8px 8px;
+  }
+  
+  .auth-form {
+    padding: 20px;
+    margin: 8px;
+  }
+  
+  .metric-value {
+    font-size: 1.5rem;
+  }
+  
+  .dashboard-card-content {
+    padding: 12px;
+  }
+  
+  .dashboard-card-header {
+    padding: 12px;
+  }
+  
+  .chart-container {
+    min-height: 200px;
+  }
+  
+  /* Stack mobile navigation items */
+  .auth-footer {
+    margin-top: 16px;
+    font-size: 12px;
+  }
+}
+
+/* Landscape phone orientation */
+@media (max-width: 900px) and (orientation: landscape) {
+  .main-content {
+    padding: 60px 16px 16px 16px;
+  }
+}
+
+/* Touch-friendly adjustments for mobile */
+@media (max-width: 900px) {
+  /* Larger touch targets */
+  .MuiIconButton-root {
+    padding: 12px;
+  }
+  
+  .MuiListItemButton-root {
+    padding: 12px 16px;
+    min-height: 48px;
+  }
+  
+  /* Better spacing for mobile cards */
+  .MuiGrid-item {
+    padding: 8px !important;
+  }
+  
+  /* Mobile-friendly table scrolling */
+  .data-table-container {
+    overflow-x: auto;
+  }
+  
+  /* Responsive text sizes */
+  .MuiTypography-h4 {
+    font-size: 1.5rem !important;
+  }
+  
+  .MuiTypography-h5 {
+    font-size: 1.25rem !important;
+  }
+  
+  .MuiTypography-h6 {
+    font-size: 1.1rem !important;
+  }
+}
+
+/* Prevent text selection on mobile tap */
+@media (max-width: 900px) {
+  .MuiListItemButton-root,
+  .MuiIconButton-root,
+  .MuiButton-root {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Ensure proper stacking of mobile elements */
+@media (max-width: 900px) {
+  .MuiDrawer-root .MuiBackdrop-root {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .MuiDrawer-paperAnchorLeft {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+}
